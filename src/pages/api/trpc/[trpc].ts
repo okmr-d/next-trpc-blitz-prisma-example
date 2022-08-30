@@ -1,33 +1,16 @@
-import { initTRPC } from '@trpc/server'
 import * as trpcNext from '@trpc/server/adapters/next'
-import superjson from 'superjson'
-import { z } from 'zod'
 
-export const t = initTRPC()({
-  transformer: superjson,
-})
-
-export const appRouter = t.router({
-  hello: t.procedure
-    .input(
-      z
-        .object({
-          text: z.string().nullish(),
-        })
-        .nullish()
-    )
-    .query(({ input }) => {
-      return {
-        greeting: `hello ${input?.text ?? 'world'}`,
-      }
-    }),
-})
-
-// export type definition of API
-export type AppRouter = typeof appRouter
+import { createContext } from '@/server/context'
+import { appRouter } from '@/server/routers/_app'
 
 // export API handler
 export default trpcNext.createNextApiHandler({
   router: appRouter,
-  createContext: () => ({}),
+  createContext,
+  onError: ({ error, type, path, input, ctx, req }) => {
+    console.error('Error:', error)
+    if (error.code === 'INTERNAL_SERVER_ERROR') {
+      // TODO バグレポートを送信
+    }
+  },
 })
