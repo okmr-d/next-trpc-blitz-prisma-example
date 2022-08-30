@@ -1,8 +1,8 @@
 import { t } from '../trpc'
-import { helloProcedure } from './hello'
+import { authRouter } from './auth'
 
 export const appRouter = t.router({
-  hello: helloProcedure,
+  auth: authRouter,
 })
 
 // export type definition of API

@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions", "referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model User {
+  id             String   @id
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  name           String
+  email          String   @unique
+  hashedPassword String?
+  role           String   @default("USER")
+
+  userProviders       UserProvider[]
+  resetPasswordTokens ResetPasswordToken[]
+  confirmEmailTokens  ConfirmEmailToken[]
+}
+
+model UserProvider {
+  id           Int    @id @default(autoincrement())
+  providerType String
+  providerId   String
+  userId       String
+  user         User   @relation(fields: [userId], references: [id])
+
+  @@unique([providerType, providerId])
+}
+
+model ResetPasswordToken {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  hashedToken String   @unique
+  expiresAt   DateTime
+  sentTo      String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model ConfirmEmailToken {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  hashedToken String   @unique
+  expiresAt   DateTime
+  sentTo      String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model SignupToken {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  hashedToken String   @unique
+  expiresAt   DateTime
+  sentTo      String
+}
