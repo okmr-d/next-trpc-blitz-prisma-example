@@ -2,8 +2,8 @@ import db, { Prisma } from '@/db'
 import { generateId } from '@/utils/generateId'
 import { Signup } from '@/validations/auth'
 
+import { hash256, SecurePassword } from '../../auth-util'
 import { t } from '../../trpc'
-import { hash256, SecurePassword } from './auth-util'
 import { login } from './login'
 
 class SignupTokenError extends Error {

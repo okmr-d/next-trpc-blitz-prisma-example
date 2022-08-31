@@ -23,10 +23,10 @@ export const SecurePassword = {
     return hashedBuffer.toString('base64')
   },
   async verify(
-    hashedPassword: string | null | undefined,
-    password: string | null | undefined
+    password: string | null | undefined,
+    hashedPassword: string | null | undefined
   ) {
-    if (!hashedPassword || !password) {
+    if (!password || !hashedPassword) {
       throw new TRPCError({ code: 'UNAUTHORIZED' })
     }
     try {

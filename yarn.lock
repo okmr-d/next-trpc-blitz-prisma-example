@@ -32,6 +32,16 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@hookform/error-message@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@hookform/error-message/-/error-message-2.0.0.tgz#9b1b037fd816ea9b1531c06aa7fab5f5154aa740"
+  integrity sha512-Y90nHzjgL2MP7GFy75kscdvxrCTjtyxGmOLLxX14nd08OXRIh9lMH/y9Kpdo0p1IPowJBiZMHyueg7p+yrqynQ==
+
+"@hookform/resolvers@^2.9.7":
+  version "2.9.7"
+  resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-2.9.7.tgz#8b257ae67234ce0270e6b044c1a61fb98ec02b4b"
+  integrity sha512-BloehX3MOLwuFEwT4yZnmolPjVmqyn8VsSuodLfazbCIqxBHsQ4qUZsi+bvNNCduRli1AGWFrkDLGD5QoNzsoA==
+
 "@humanwhocodes/config-array@^0.10.4":
   version "0.10.4"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.10.4.tgz#01e7366e57d2ad104feea63e72248f22015c520c"
@@ -1703,6 +1713,11 @@ react-dom@18.2.0:
   dependencies:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
+
+react-hook-form@^7.34.2:
+  version "7.34.2"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.34.2.tgz#9ac6d1a309a7c4aaa369d1269357a70e9e9bf4de"
+  integrity sha512-1lYWbEqr0GW7HHUjMScXMidGvV0BE2RJV3ap2BL7G0EJirkqpccTaawbsvBO8GZaB3JjCeFBEbnEWI1P8ZoLRQ==
 
 react-is@^16.13.1:
   version "16.13.1"

@@ -1,8 +1,8 @@
 import db from '@/db'
 import { SendSignupEmail } from '@/validations/auth'
 
+import { generateToken, hash256 } from '../../auth-util'
 import { t } from '../../trpc'
-import { generateToken, hash256 } from './auth-util'
 
 const VERIFY_SIGNUP_TOKEN_EXPIRATION_IN_HOURS = 1
 

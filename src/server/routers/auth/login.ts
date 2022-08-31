@@ -5,8 +5,8 @@ import type { IronSession } from 'iron-session'
 import db from '@/db'
 import { Login } from '@/validations/auth'
 
+import { SecurePassword } from '../../auth-util'
 import { t } from '../../trpc'
-import { SecurePassword } from './auth-util'
 
 export const authenticateUser = async (email: string, password: string) => {
   // emailをキーにDBからユーザーを取得

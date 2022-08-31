@@ -1,8 +1,8 @@
 import db from '@/db'
 import { SendResetPasswordEmail } from '@/validations/auth'
 
+import { generateToken, hash256 } from '../../auth-util'
 import { t } from '../../trpc'
-import { generateToken, hash256 } from './auth-util'
 
 const RESET_PASSWORD_TOKEN_EXPIRATION_IN_HOURS = 4
 

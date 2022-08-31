@@ -1,8 +1,8 @@
 import db from '@/db'
 import { ResetPassword } from '@/validations/auth'
 
+import { hash256, SecurePassword } from '../../auth-util'
 import { t } from '../../trpc'
-import { hash256, SecurePassword } from './auth-util'
 import { login } from './login'
 
 export class ResetPasswordError extends Error {
