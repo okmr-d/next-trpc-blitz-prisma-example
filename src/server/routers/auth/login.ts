@@ -1,8 +1,6 @@
 import { TRPCError } from '@trpc/server'
 
-import type { IronSession } from 'iron-session'
-
-import db from '@/db'
+import { prisma } from '@/server/prisma'
 import { Login } from '@/validations/auth'
 
 import { SecurePassword } from '../../auth-util'
@@ -10,7 +8,7 @@ import { t } from '../../trpc'
 
 export const authenticateUser = async (email: string, password: string) => {
   // emailをキーにDBからユーザーを取得
-  const user = await db.user.findFirst({ where: { email } })
+  const user = await prisma.user.findFirst({ where: { email } })
 
   if (!user) {
     // ユーザーが見つからない場合、エラー
@@ -24,7 +22,7 @@ export const authenticateUser = async (email: string, password: string) => {
     // Upgrade hashed password with a more secure hash
     const improvedHash = await SecurePassword.hash(password)
     // hashedPassword を更新
-    await db.user.update({
+    await prisma.user.update({
       where: { id: user.id },
       data: { hashedPassword: improvedHash },
     })
@@ -35,18 +33,18 @@ export const authenticateUser = async (email: string, password: string) => {
   return rest
 }
 
-export const login = async (session: IronSession, userId: string) => {
+export const login = async (session: any, userId: string) => {
   // TODO DB の Session を作成
-
   // セッションにユーザーIDを保存
-  session.userId = userId
-  await session.save()
+  //session.userId = userId
+  //await session.save()
 }
 
 export const loginProcedure = t.procedure
   .input(Login)
-  .mutation(async ({ input: { email, password }, ctx: { session } }) => {
+  .mutation(async ({ input: { email, password }, ctx }) => {
     const user = await authenticateUser(email, password)
-    await login(session, user.id)
+    // TODO ログイン
+    //await login(session, user.id)
     return
   })

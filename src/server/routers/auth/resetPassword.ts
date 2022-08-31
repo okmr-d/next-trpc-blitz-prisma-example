@@ -1,4 +1,4 @@
-import db from '@/db'
+import { prisma } from '@/server/prisma'
 import { ResetPassword } from '@/validations/auth'
 
 import { hash256, SecurePassword } from '../../auth-util'
@@ -12,10 +12,10 @@ export class ResetPasswordError extends Error {
 
 export const resetPasswordProcedure = t.procedure
   .input(ResetPassword)
-  .mutation(async ({ input: { token, password }, ctx: { session } }) => {
+  .mutation(async ({ input: { token, password }, ctx }) => {
     // パスワードリセット用トークンを検索
     const hashedToken = hash256(token)
-    const savedToken = await db.resetPasswordToken.findFirst({
+    const savedToken = await prisma.resetPasswordToken.findFirst({
       where: { hashedToken },
     })
 
@@ -27,7 +27,7 @@ export const resetPasswordProcedure = t.procedure
 
     // トークンを削除
     // この後の処理でエラーが発生したとしてももう使われないため
-    await db.resetPasswordToken.delete({ where: { id: savedToken.id } })
+    await prisma.resetPasswordToken.delete({ where: { id: savedToken.id } })
 
     // トークンが有効期限切れの場合、エラー
     if (savedToken.expiresAt < new Date()) {
@@ -37,16 +37,16 @@ export const resetPasswordProcedure = t.procedure
 
     // トークンが正しい場合、ユーザーのパスワードを更新
     const hashedPassword = await SecurePassword.hash(password)
-    const user = await db.user.update({
+    const user = await prisma.user.update({
       where: { id: savedToken.userId },
       data: { hashedPassword },
     })
 
     // TODO ユーザーのすべてのセッションを破棄
-    //await db.session.deleteMany({ where: { userId: user.id } })
+    //await prisma.session.deleteMany({ where: { userId: user.id } })
 
-    // ログイン
-    await login(session, user.id)
+    // ログイン TODO
+    //await login(session, user.id)
 
     return
   })

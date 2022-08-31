@@ -1,4 +1,4 @@
-import db from '@/db'
+import { prisma } from '@/server/prisma'
 import { SendSignupEmail } from '@/validations/auth'
 
 import { generateToken, hash256 } from '../../auth-util'
@@ -15,7 +15,7 @@ export const sendSignupEmailProcedure = t.procedure
   .input(SendSignupEmail)
   .mutation(async ({ input: { email } }) => {
     // ユーザーを取得
-    const user = await db.user.findFirst({
+    const user = await prisma.user.findFirst({
       where: { email },
     })
 
@@ -34,10 +34,10 @@ export const sendSignupEmailProcedure = t.procedure
     )
 
     // 存在する古いトークンを削除
-    await db.signupToken.deleteMany({ where: { sentTo: email } })
+    await prisma.signupToken.deleteMany({ where: { sentTo: email } })
 
     // サインアップ用トークンを作成
-    await db.signupToken.create({
+    await prisma.signupToken.create({
       data: {
         hashedToken,
         expiresAt,

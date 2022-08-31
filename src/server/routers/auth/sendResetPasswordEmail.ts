@@ -1,4 +1,4 @@
-import db from '@/db'
+import { prisma } from '@/server/prisma'
 import { SendResetPasswordEmail } from '@/validations/auth'
 
 import { generateToken, hash256 } from '../../auth-util'
@@ -10,7 +10,7 @@ export const sendResetPasswordEmailProcedure = t.procedure
   .input(SendResetPasswordEmail)
   .mutation(async ({ input: { email } }) => {
     // ユーザーを取得
-    const user = await db.user.findFirst({
+    const user = await prisma.user.findFirst({
       where: { email },
     })
 
@@ -25,12 +25,12 @@ export const sendResetPasswordEmailProcedure = t.procedure
     if (user) {
       // ユーザーが存在する場合
       // 存在する古いトークンを削除
-      await db.resetPasswordToken.deleteMany({
+      await prisma.resetPasswordToken.deleteMany({
         where: { userId: user.id },
       })
 
       // パスワードリセット用トークンを作成
-      await db.resetPasswordToken.create({
+      await prisma.resetPasswordToken.create({
         data: {
           user: { connect: { id: user.id } },
           expiresAt,

@@ -10,7 +10,17 @@ export default trpcNext.createNextApiHandler({
   onError: ({ error, type, path, input, ctx, req }) => {
     console.error('Error:', error)
     if (error.code === 'INTERNAL_SERVER_ERROR') {
-      // TODO バグレポートを送信
+      // TODO send to bug reporting
+      console.error('Something went wrong', error)
     }
   },
+  batching: {
+    enabled: true,
+  },
+  /**
+   * @link https://trpc.io/docs/caching#api-response-caching
+   */
+  // responseMeta() {
+  //   // ...
+  // },
 })
