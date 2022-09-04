@@ -1,4 +1,4 @@
-import { NextPageWithLayout } from '@/pages/_app'
+import type { NextPageWithLayout } from 'next'
 
 export const HomePage: NextPageWithLayout = () => {
   return (

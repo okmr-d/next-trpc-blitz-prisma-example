@@ -1,5 +1,6 @@
+import type { NextPageWithLayout } from 'next'
+
 import { SendSignupEmailForm } from '@/components/features/auth/SendSignupEmailForm'
-import type { NextPageWithLayout } from '@/pages/_app'
 
 export const SignupPage: NextPageWithLayout = () => {
   return (

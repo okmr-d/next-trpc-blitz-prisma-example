@@ -1,12 +1,10 @@
 import { Prisma } from '@prisma/client'
 
-import { prisma } from '@/server/prisma'
-import { generateId } from '@/utils/generateId'
+import { hash256, SecurePassword } from '@/auth/server'
+import { db } from '@/server/db'
+import { t } from '@/server/trpc'
+import { generateId } from '@/utils/token'
 import { Signup } from '@/validations/auth'
-
-import { hash256, SecurePassword } from '../../auth-util'
-import { t } from '../../trpc'
-import { login } from './login'
 
 class SignupTokenError extends Error {
   name = 'SignupTokenError'
@@ -14,10 +12,10 @@ class SignupTokenError extends Error {
 
 export const signupProcedure = t.procedure
   .input(Signup)
-  .mutation(async ({ input: { token, name, password }, ctx }) => {
+  .mutation(async ({ input: { token, name, password }, ctx: { session } }) => {
     // サインアップ用トークンを検索
     const hashedToken = hash256(token)
-    const savedToken = await prisma.signupToken.findFirst({
+    const savedToken = await db.signupToken.findFirst({
       where: { hashedToken },
     })
 
@@ -29,7 +27,7 @@ export const signupProcedure = t.procedure
 
     // トークンを削除
     // この後の処理でエラーが発生したとしてももう使われないため
-    await prisma.signupToken.delete({ where: { id: savedToken.id } })
+    await db.signupToken.delete({ where: { id: savedToken.id } })
 
     // トークンが有効期限切れの場合、エラー
     if (savedToken.expiresAt < new Date()) {
@@ -41,7 +39,7 @@ export const signupProcedure = t.procedure
     const userId = generateId()
     const hashedPassword = await SecurePassword.hash(password)
     try {
-      await prisma.user.create({
+      await db.user.create({
         data: {
           id: userId,
           name,
@@ -63,8 +61,7 @@ export const signupProcedure = t.procedure
       throw error
     }
 
-    // TODO ログイン
-    //await login(session, userId)
+    await session.$create(userId)
 
     return
   })

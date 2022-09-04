@@ -1,5 +1,6 @@
+import type { NextPageWithLayout } from 'next'
+
 import { LoginForm } from '@/components/features/auth/LoginForm'
-import type { NextPageWithLayout } from '@/pages/_app'
 
 export const LoginPage: NextPageWithLayout = () => {
   return (

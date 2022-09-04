@@ -1,8 +1,7 @@
-import { prisma } from '@/server/prisma'
+import { hash256, generateToken } from '@/auth/server'
+import { db } from '@/server/db'
+import { t } from '@/server/trpc'
 import { SendSignupEmail } from '@/validations/auth'
-
-import { generateToken, hash256 } from '../../auth-util'
-import { t } from '../../trpc'
 
 const VERIFY_SIGNUP_TOKEN_EXPIRATION_IN_HOURS = 1
 
@@ -15,7 +14,7 @@ export const sendSignupEmailProcedure = t.procedure
   .input(SendSignupEmail)
   .mutation(async ({ input: { email } }) => {
     // ユーザーを取得
-    const user = await prisma.user.findFirst({
+    const user = await db.user.findFirst({
       where: { email },
     })
 
@@ -34,10 +33,10 @@ export const sendSignupEmailProcedure = t.procedure
     )
 
     // 存在する古いトークンを削除
-    await prisma.signupToken.deleteMany({ where: { sentTo: email } })
+    await db.signupToken.deleteMany({ where: { sentTo: email } })
 
     // サインアップ用トークンを作成
-    await prisma.signupToken.create({
+    await db.signupToken.create({
       data: {
         hashedToken,
         expiresAt,

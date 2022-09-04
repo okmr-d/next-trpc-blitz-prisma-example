@@ -1,15 +1,12 @@
 import * as crypto from 'crypto'
 
-import { TRPCError } from '@trpc/server'
 import SecurePasswordLib from 'secure-password'
 
-import { generateId } from '@/utils/generateId'
+import { AuthenticationError } from '../../errors'
 
 export const hash256 = (input: string = '') => {
   return crypto.createHash('sha256').update(input).digest('hex')
 }
-
-export const generateToken = (size: number = 32) => generateId(size)
 
 const SP = () => new SecurePasswordLib()
 
@@ -17,7 +14,7 @@ export const SecurePassword = {
   ...SecurePasswordLib,
   async hash(password: string | null | undefined) {
     if (!password) {
-      throw new TRPCError({ code: 'UNAUTHORIZED' })
+      throw new AuthenticationError()
     }
     const hashedBuffer = await SP().hash(Buffer.from(password))
     return hashedBuffer.toString('base64')
@@ -27,7 +24,7 @@ export const SecurePassword = {
     hashedPassword: string | null | undefined
   ) {
     if (!password || !hashedPassword) {
-      throw new TRPCError({ code: 'UNAUTHORIZED' })
+      throw new AuthenticationError()
     }
     try {
       const result = await SP().verify(
@@ -41,11 +38,11 @@ export const SecurePassword = {
           return result
         default:
           // For everything else throw AuthenticationError
-          throw new TRPCError({ code: 'UNAUTHORIZED' })
+          throw new AuthenticationError()
       }
     } catch (error) {
       // Could be error like failed to hash password
-      throw new TRPCError({ code: 'UNAUTHORIZED' })
+      throw new AuthenticationError()
     }
   },
 }

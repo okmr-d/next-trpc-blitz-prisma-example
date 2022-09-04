@@ -1,13 +1,8 @@
-import { t } from '../../trpc'
+import { t } from '@/server/trpc'
 
-//const logout = async (session) => {
-//  // TODO DB の Session を削除
-//
-//  // セッションを破棄
-//  session.destroy()
-//}
-
-export const logoutProcedure = t.procedure.mutation(async ({ ctx }) => {
-  //await logout(session)
-  return
-})
+export const logoutProcedure = t.procedure.mutation(
+  async ({ ctx: { session } }) => {
+    await session.$revoke()
+    return
+  }
+)

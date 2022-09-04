@@ -1,22 +1,21 @@
-import type { NextPage } from 'next'
-import type { AppProps } from 'next/app'
+import { useEffect } from 'react'
+
+import type { AppPropsWithLayout } from 'next/app'
 import type { AppType } from 'next/dist/shared/lib/utils'
-import type { ReactElement, ReactNode } from 'react'
 
 import { DefaultLayout } from '@/components/layouts/DefaultLayout'
 import { trpc } from '@/utils/trpc'
 
-export type NextPageWithLayout = NextPage & {
-  getLayout?: (page: ReactElement) => ReactNode
-}
-
-type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout
-}
-
 const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout =
     Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>)
+
+  const queryClient = trpc.useContext().queryClient
+  useEffect(() => {
+    // グローバル変数に入れてどこでも使えるようにする
+    globalThis.queryClient = queryClient
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return getLayout(<Component {...pageProps} />)
 }) as AppType

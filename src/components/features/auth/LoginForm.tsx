@@ -1,5 +1,3 @@
-import { z } from 'zod'
-
 import { FieldError } from '@/components/common/form/FieldError'
 import { Form, FORM_ERROR } from '@/components/common/form/Form'
 import { FormError } from '@/components/common/form/FormError'
@@ -28,6 +26,7 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
               [FORM_ERROR]: 'メールアドレスまたはパスワードが間違っています',
             }
           }
+          console.log({ error })
           return { [FORM_ERROR]: '予期せぬエラーが発生しました' }
         }
         onSuccess?.()

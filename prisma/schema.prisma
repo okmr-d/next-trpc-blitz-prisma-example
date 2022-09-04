@@ -21,19 +21,30 @@ model User {
   hashedPassword String?
   role           String   @default("USER")
 
-  userProviders       UserProvider[]
   resetPasswordTokens ResetPasswordToken[]
   confirmEmailTokens  ConfirmEmailToken[]
+  session             Session[]
+  //providerAccount     ProviderAccount[]
 }
 
-model UserProvider {
-  id           Int    @id @default(autoincrement())
-  providerType String
-  providerId   String
-  userId       String
-  user         User   @relation(fields: [userId], references: [id])
+//model ProviderAccount {
+//  id                Int    @id @default(autoincrement())
+//  userId            String
+//  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+//  provider          String
+//  providerAccountId String
+//
+//  @@unique([provider, providerAccountId])
+//}
 
-  @@unique([providerType, providerId])
+model Session {
+  id                 Int      @id @default(autoincrement())
+  handle             String   @unique
+  hashedSessionToken String
+  antiCSRFToken      String
+  expiresAt          DateTime
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ResetPasswordToken {

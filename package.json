@@ -15,14 +15,16 @@
   "dependencies": {
     "@hookform/error-message": "^2.0.0",
     "@hookform/resolvers": "^2.9.7",
-    "@prisma/client": "^4.2.1",
+    "@prisma/client": "^4.3.1",
     "@tanstack/react-query": "^4.2.3",
     "@trpc/client": "^10.0.0-proxy-alpha.59",
     "@trpc/next": "^10.0.0-proxy-alpha.59",
     "@trpc/react": "^10.0.0-proxy-alpha.59",
     "@trpc/server": "^10.0.0-proxy-alpha.59",
+    "b64-lite": "^1.4.0",
     "cookie": "^0.5.0",
     "crypto": "^1.0.1",
+    "jsonwebtoken": "^8.5.1",
     "nanoid": "^4.0.0",
     "next": "12.2.5",
     "react": "18.2.0",
@@ -34,7 +36,9 @@
   },
   "devDependencies": {
     "@tanstack/react-query-devtools": "^4.2.3",
+    "@types/b64-lite": "^1.4.0",
     "@types/cookie": "^0.5.1",
+    "@types/jsonwebtoken": "^8.5.9",
     "@types/node": "18.7.13",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6",
@@ -43,7 +47,7 @@
     "eslint-config-next": "12.2.5",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
-    "prisma": "^4.2.1",
+    "prisma": "^4.3.1",
     "typescript": "4.8.2"
   }
 }

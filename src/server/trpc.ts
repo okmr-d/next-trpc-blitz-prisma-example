@@ -3,9 +3,40 @@ import superjson from 'superjson'
 
 import type { Context } from './context'
 
+import { AuthenticationError, CSRFTokenMismatchError } from '@/auth/errors'
+
 export const t = initTRPC<{ ctx: Context }>()({
   transformer: superjson,
-  errorFormatter({ shape }) {
-    return shape
+  errorFormatter({ shape, error, ctx }) {
+    console.log({ shape, error })
+    if (error.cause instanceof AuthenticationError) {
+      return {
+        code: 'UNAUTHENTICATED',
+        message: 'unauthenticated',
+        data: {
+          code: 'UNAUTHENTICATED',
+          httpStatus: 401,
+        },
+      }
+    } else if (error.cause instanceof CSRFTokenMismatchError) {
+      return {
+        code: 'CSRF_TOKEN_MISMATCH',
+        message: 'anti CSRF token does not match',
+        data: {
+          code: 'CSRF_TOKEN_MISMATCH',
+          httpStatus: 400,
+        },
+      }
+    }
+
+    const { stack, ...restData } = shape.data
+
+    return {
+      ...shape,
+      code: restData.code,
+      data: {
+        ...restData,
+      },
+    }
   },
 })
