@@ -1,5 +1,5 @@
 {
-  "name": "next-trpc-example",
+  "name": "next-trpc-prisma-auth-example",
   "version": "0.1.0",
   "private": true,
   "scripts": {
