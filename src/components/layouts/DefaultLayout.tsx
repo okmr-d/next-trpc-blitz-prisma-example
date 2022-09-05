@@ -1,5 +1,4 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import Head from 'next/head'
 import { ReactNode } from 'react'
 
 type DefaultLayoutProps = { children: ReactNode }

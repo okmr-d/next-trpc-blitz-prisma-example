@@ -1,21 +1,17 @@
-import { useEffect } from 'react'
-
 import type { AppPropsWithLayout } from 'next/app'
 import type { AppType } from 'next/dist/shared/lib/utils'
 
-import { DefaultLayout } from '@/components/layouts/DefaultLayout'
 import { trpc } from '@/utils/trpc'
 
 const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
-  const getLayout =
-    Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>)
+  const getLayout = Component.getLayout ?? ((page) => <>{page}</>)
 
-  const queryClient = trpc.useContext().queryClient
-  useEffect(() => {
-    // グローバル変数に入れてどこでも使えるようにする
-    globalThis.queryClient = queryClient
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  //const queryClient = trpc.useContext().queryClient
+  //useEffect(() => {
+  //  // グローバル変数に入れてどこでも使えるようにする
+  //  globalThis.queryClient = queryClient
+  //  // eslint-disable-next-line react-hooks/exhaustive-deps
+  //}, [])
 
   return getLayout(<Component {...pageProps} />)
 }) as AppType
