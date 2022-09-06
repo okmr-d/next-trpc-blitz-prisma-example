@@ -11,7 +11,7 @@ type LoginFormProps = {
 }
 
 export const LoginForm = ({ onSuccess }: LoginFormProps) => {
-  const loginMutation = trpc.proxy.auth.login.useMutation()
+  const loginMutation = trpc.auth.login.useMutation()
 
   return (
     <Form

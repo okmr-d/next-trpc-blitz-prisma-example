@@ -13,7 +13,7 @@ type SendSignupEmailFormProps = {
 export const SendSignupEmailForm = ({
   onSuccess,
 }: SendSignupEmailFormProps) => {
-  const sendSignupEmailMutation = trpc.proxy.auth.sendSignupEmail.useMutation()
+  const sendSignupEmailMutation = trpc.auth.sendSignupEmail.useMutation()
 
   return (
     <Form

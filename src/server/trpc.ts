@@ -5,9 +5,9 @@ import type { Context } from './context'
 
 import { AuthenticationError, CSRFTokenMismatchError } from './errors'
 
-export const t = initTRPC<{ ctx: Context }>()({
+export const t = initTRPC.context<Context>().create({
   transformer: superjson,
-  errorFormatter({ shape, error, ctx }) {
+  errorFormatter: ({ shape, error, ctx }) => {
     console.log({ shape, error })
     if (error.cause instanceof AuthenticationError) {
       return {
@@ -29,14 +29,11 @@ export const t = initTRPC<{ ctx: Context }>()({
       }
     }
 
-    const { stack, ...restData } = shape.data
+    delete shape.data.stack
 
     return {
       ...shape,
-      code: restData.code,
-      data: {
-        ...restData,
-      },
+      code: shape.data.code,
     }
   },
 })
