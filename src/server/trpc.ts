@@ -3,7 +3,7 @@ import superjson from 'superjson'
 
 import type { Context } from './context'
 
-import { AuthenticationError, CSRFTokenMismatchError } from '@/auth/errors'
+import { AuthenticationError, CSRFTokenMismatchError } from './errors'
 
 export const t = initTRPC<{ ctx: Context }>()({
   transformer: superjson,

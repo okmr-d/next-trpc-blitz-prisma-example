@@ -1,6 +1,7 @@
-import { AuthenticationError } from '@/auth/errors'
-import { SecurePassword } from '@/auth/server'
+import { SecurePassword } from '@blitzjs/auth'
+
 import { db } from '@/server/db'
+import { AuthenticationError } from '@/server/errors'
 import { t } from '@/server/trpc'
 import { Login } from '@/validations/auth'
 
@@ -35,6 +36,6 @@ export const loginProcedure = t.procedure
   .input(Login)
   .mutation(async ({ input: { email, password }, ctx: { session } }) => {
     const user = await authenticateUser(email, password)
-    await session.$create(user.id)
+    await session.$create({ userId: user.id })
     return
   })

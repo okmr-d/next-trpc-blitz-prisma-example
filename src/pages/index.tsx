@@ -1,5 +1,5 @@
 import { DefaultLayout } from '@/components/layouts/DefaultLayout'
-import { HomePage } from '@/components/pages/home/HomePage'
+import { HomePage } from '@/components/pages/HomePage'
 
 HomePage.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>
 

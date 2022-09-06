@@ -1,4 +1,5 @@
-import { hash256, generateToken } from '@/auth/server'
+import { hash256, generateToken } from '@blitzjs/auth'
+
 import { db } from '@/server/db'
 import { t } from '@/server/trpc'
 import { SendSignupEmail } from '@/validations/auth'

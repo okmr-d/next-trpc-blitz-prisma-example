@@ -1,9 +1,9 @@
+import { hash256, SecurePassword } from '@blitzjs/auth'
 import { Prisma } from '@prisma/client'
 
-import { hash256, SecurePassword } from '@/auth/server'
 import { db } from '@/server/db'
 import { t } from '@/server/trpc'
-import { generateId } from '@/utils/token'
+import { generateId } from '@/utils/generateId'
 import { Signup } from '@/validations/auth'
 
 class SignupTokenError extends Error {
@@ -61,7 +61,7 @@ export const signupProcedure = t.procedure
       throw error
     }
 
-    await session.$create(userId)
+    await session.$create({ userId })
 
     return
   })

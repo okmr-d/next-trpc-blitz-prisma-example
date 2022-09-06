@@ -1,4 +1,5 @@
-import { hash256, SecurePassword } from '@/auth/server'
+import { hash256, SecurePassword } from '@blitzjs/auth'
+
 import { db } from '@/server/db'
 import { t } from '@/server/trpc'
 import { ResetPassword } from '@/validations/auth'
@@ -47,7 +48,7 @@ export const resetPasswordProcedure = t.procedure
     })
 
     // ログイン
-    await session.$create(user.id)
+    await session.$create({ userId: user.id })
 
     return
   })

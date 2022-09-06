@@ -1,7 +1,20 @@
+import {
+  AuthServerPlugin,
+  PrismaStorage,
+  simpleRolesIsAuthorized,
+} from '@blitzjs/auth'
 import * as trpcNext from '@trpc/server/adapters/next'
 
 import { createContext } from '@/server/context'
+import { db } from '@/server/db'
 import { appRouter } from '@/server/routers/_app'
+
+// @blitzjs/auth server plugin
+AuthServerPlugin({
+  cookiePrefix: 'myapp',
+  storage: PrismaStorage(db),
+  isAuthorized: simpleRolesIsAuthorized,
+})
 
 export default trpcNext.createNextApiHandler({
   router: appRouter,

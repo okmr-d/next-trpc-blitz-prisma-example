@@ -1,3 +1,9 @@
+import {
+  getAntiCSRFToken,
+  HEADER_CSRF,
+  HEADER_CSRF_ERROR,
+  HEADER_SESSION_CREATED,
+} from '@blitzjs/auth'
 import { httpLink, loggerLink } from '@trpc/client'
 import { setupTRPC } from '@trpc/next'
 import { NextPageContext } from 'next'
@@ -5,14 +11,11 @@ import superjson from 'superjson'
 
 import type { inferProcedureInput, inferProcedureOutput } from '@trpc/server'
 
-import {
-  HEADER_CSRF,
-  HEADER_CSRF_ERROR,
-  HEADER_SESSION_CREATED,
-} from '@/auth/constants'
 import type { AppRouter } from '@/server/routers/_app'
 
-import { getAntiCSRFToken } from '../auth/client/cookie'
+// default suspense config
+globalThis.__BLITZ_SUSPENSE_ENABLED = false
+globalThis.__BLITZ_SESSION_COOKIE_PREFIX = 'myapp'
 
 const getBaseUrl = () => {
   if (typeof window !== 'undefined') {

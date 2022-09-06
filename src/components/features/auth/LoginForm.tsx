@@ -21,13 +21,12 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
         try {
           await loginMutation.mutateAsync({ email, password })
         } catch (error: any) {
-          if (error.data?.code === 'UNAUTHORIZED') {
+          if (error.data?.code === 'UNAUTHENTICATED') {
             return {
-              [FORM_ERROR]: 'メールアドレスまたはパスワードが間違っています',
+              [FORM_ERROR]: 'Invalid email or password',
             }
           }
-          console.log({ error })
-          return { [FORM_ERROR]: '予期せぬエラーが発生しました' }
+          return { [FORM_ERROR]: 'Sorry, something went wrong' }
         }
         onSuccess?.()
       }}
@@ -43,7 +42,7 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
       </div>
 
       <div>
-        <SubmitButton>ログイン</SubmitButton>
+        <SubmitButton>Login</SubmitButton>
         <FormError />
       </div>
     </Form>
