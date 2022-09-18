@@ -1,5 +1,3 @@
-import { DefaultLayout } from '@/components/layouts/DefaultLayout'
-import { LoginPage } from '@/components/pages/auth/LoginPage'
+import { Login } from '@/components/pages/auth/Login'
 
-LoginPage.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>
-export default LoginPage
+export default Login

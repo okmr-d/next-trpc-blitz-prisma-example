@@ -9,12 +9,10 @@ const RESET_PASSWORD_TOKEN_EXPIRATION_IN_HOURS = 4
 export const sendResetPasswordEmailProcedure = t.procedure
   .input(SendResetPasswordEmail)
   .mutation(async ({ input: { email } }) => {
-    // ユーザーを取得
     const user = await db.user.findFirst({
       where: { email },
     })
 
-    // トークンと有効期限を生成
     const token = generateToken()
     const hashedToken = hash256(token)
     const expiresAt = new Date()
@@ -23,13 +21,11 @@ export const sendResetPasswordEmailProcedure = t.procedure
     )
 
     if (user) {
-      // ユーザーが存在する場合
-      // 存在する古いトークンを削除
+      // Delete all tokens
       await db.resetPasswordToken.deleteMany({
         where: { userId: user.id },
       })
 
-      // パスワードリセット用トークンを作成
       await db.resetPasswordToken.create({
         data: {
           user: { connect: { id: user.id } },
@@ -42,11 +38,9 @@ export const sendResetPasswordEmailProcedure = t.procedure
       // TODO メールを送信
       // await resetPasswordMailer({ to: user.email, token }).send()
     } else {
-      // ユーザーが存在しない場合
-      // ユーザーが存在した場合との違いを攻撃者に分からせないようにするため、同じくらいの時間待つ
+      // If no user found wait the same time so attackers can't tell the difference
       await new Promise((resolve) => setTimeout(resolve, 750))
     }
 
-    // 同じ結果を返す
     return
   })

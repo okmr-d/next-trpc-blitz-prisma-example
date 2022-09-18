@@ -1,8 +1,13 @@
-import { FieldError } from '@/components/common/form/FieldError'
-import { Form, FORM_ERROR } from '@/components/common/form/Form'
-import { FormError } from '@/components/common/form/FormError'
-import { SubmitButton } from '@/components/common/form/SubmitButton'
-import { TextField } from '@/components/common/form/TextField'
+import Link from 'next/link'
+
+import {
+  Form,
+  FORM_ERROR,
+  FieldError,
+  FormError,
+  SubmitButton,
+  TextField,
+} from '@/components/common/form'
 import { trpc } from '@/utils/trpc'
 import { Login } from '@/validations/auth'
 
@@ -39,6 +44,9 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
       <div>
         <TextField type="password" name="password" placeholder="Password" />
         <FieldError name="password" />
+        <div>
+          <Link href="/auth/forgot-password">Forgot Password?</Link>
+        </div>
       </div>
 
       <div>

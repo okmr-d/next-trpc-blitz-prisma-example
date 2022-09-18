@@ -1,6 +1,3 @@
-import { DefaultLayout } from '@/components/layouts/DefaultLayout'
-import { HomePage } from '@/components/pages/HomePage'
+import { Home } from '@/components/pages/Home'
 
-HomePage.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>
-
-export default HomePage
+export default Home

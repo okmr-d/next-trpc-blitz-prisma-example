@@ -12,15 +12,15 @@ export const t = initTRPC.context<Context>().create({
     if (error.cause instanceof AuthenticationError) {
       return {
         code: 'UNAUTHENTICATED',
-        message: 'unauthenticated',
         data: {
           code: 'UNAUTHENTICATED',
           httpStatus: 401,
+          message: 'unauthenticated',
         },
       }
     } else if (error.cause instanceof CSRFTokenMismatchError) {
       return {
-        code: 'CSRF_TOKEN_MISMATCH',
+        code: 'BAD_REQUEST',
         message: 'anti CSRF token does not match',
         data: {
           code: 'CSRF_TOKEN_MISMATCH',

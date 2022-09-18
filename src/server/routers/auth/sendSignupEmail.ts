@@ -1,4 +1,5 @@
 import { hash256, generateToken } from '@blitzjs/auth'
+import { TRPCError } from '@trpc/server'
 
 import { db } from '@/server/db'
 import { t } from '@/server/trpc'
@@ -6,9 +7,13 @@ import { SendSignupEmail } from '@/validations/auth'
 
 const VERIFY_SIGNUP_TOKEN_EXPIRATION_IN_HOURS = 1
 
-class SignupError extends Error {
-  name = 'SignupError'
-  message = 'このメールアドレスはすでに使用されています。'
+class SignupError extends TRPCError {
+  constructor() {
+    super({
+      code: 'BAD_REQUEST',
+      message: 'This email is already being used.',
+    })
+  }
 }
 
 export const sendSignupEmailProcedure = t.procedure
@@ -20,8 +25,6 @@ export const sendSignupEmailProcedure = t.procedure
     })
 
     if (user) {
-      // 登録済みの場合はエラー
-      //TODO
       throw new SignupError()
     }
 
@@ -47,6 +50,7 @@ export const sendSignupEmailProcedure = t.procedure
 
     // TODO メールを送信
     //await signupMailer({ to: email, token }).send()
+    console.log(token)
 
     return
   })

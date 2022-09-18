@@ -56,6 +56,7 @@ export function Form<S extends z.ZodType<any, any>>({
     formState: { isSubmitSuccessful },
     reset,
   } = ctx
+
   useEffect(() => {
     if (resetOnSubmitSuccessful && isSubmitSuccessful) {
       reset()
@@ -78,9 +79,6 @@ export function Form<S extends z.ZodType<any, any>>({
                   message: value,
                 })
               }
-            }
-            if (Object.keys(result).length > 0) {
-              return Promise.reject('Submit Error')
             }
           })}
           {...props}

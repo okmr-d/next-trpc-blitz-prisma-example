@@ -1,6 +1,8 @@
 import { forwardRef, PropsWithoutRef } from 'react'
 import { useFormContext } from 'react-hook-form'
 
+import { useFormErrorContext } from './Form'
+
 type SubmitButtonProps = PropsWithoutRef<JSX.IntrinsicElements['button']> & {
   /** 初期状態で disabled にするか */
   disabledOnPristine?: boolean
@@ -17,9 +19,12 @@ export const SubmitButton = forwardRef<HTMLButtonElement, SubmitButtonProps>(
       formState: { isSubmitting, isSubmitSuccessful, isValid, isDirty },
     } = useFormContext()
 
+    const { formError } = useFormErrorContext()
+    const hasError = !isValid || formError !== null
+
     // 送信成功後にページを移動する場合もあるので、isSubmitSuccessfulでもローディング状態のままにする。
     // その場合、reset()でローディング解除する
-    const isLoading = isSubmitting || isSubmitSuccessful
+    const isLoading = isSubmitting || (isSubmitSuccessful && !hasError)
 
     const disabled =
       (disabledOnPristine && !isDirty) ||
@@ -29,7 +34,7 @@ export const SubmitButton = forwardRef<HTMLButtonElement, SubmitButtonProps>(
 
     return (
       <button type="submit" ref={ref} {...props} disabled={disabled}>
-        {children} {isSubmitSuccessful && '送信完了'}
+        {children}
       </button>
     )
   }

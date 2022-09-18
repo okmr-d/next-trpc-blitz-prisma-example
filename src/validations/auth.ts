@@ -34,5 +34,14 @@ export const ResetPassword = z
     {
       message: "Passwords don't match",
       path: ['passwordConfirmation'],
-    }
+    },
   )
+
+export const ChangePassword = z.object({
+  currentPassword: password,
+  newPassword: newPassword,
+})
+
+export const ConfirmEmail = z.object({
+  token,
+})

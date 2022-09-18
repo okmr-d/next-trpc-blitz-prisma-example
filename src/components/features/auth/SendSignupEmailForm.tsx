@@ -1,13 +1,16 @@
-import { FieldError } from '@/components/common/form/FieldError'
-import { Form, FORM_ERROR } from '@/components/common/form/Form'
-import { FormError } from '@/components/common/form/FormError'
-import { SubmitButton } from '@/components/common/form/SubmitButton'
-import { TextField } from '@/components/common/form/TextField'
+import {
+  Form,
+  FORM_ERROR,
+  FieldError,
+  FormError,
+  SubmitButton,
+  TextField,
+} from '@/components/common/form'
 import { trpc } from '@/utils/trpc'
 import { SendSignupEmail } from '@/validations/auth'
 
 type SendSignupEmailFormProps = {
-  onSuccess?: () => void
+  onSuccess: () => void
 }
 
 export const SendSignupEmailForm = ({
@@ -23,9 +26,9 @@ export const SendSignupEmailForm = ({
         try {
           await sendSignupEmailMutation.mutateAsync({ email })
         } catch (error: any) {
-          return { [FORM_ERROR]: '予期せぬエラーが発生しました' }
+          return { [FORM_ERROR]: 'Sorry, something went wrong' }
         }
-        onSuccess?.()
+        onSuccess()
       }}
       resetOnSubmitSuccessful
     >
@@ -35,7 +38,7 @@ export const SendSignupEmailForm = ({
       </div>
 
       <div>
-        <SubmitButton>送信</SubmitButton>
+        <SubmitButton>Submit</SubmitButton>
         <FormError />
       </div>
     </Form>

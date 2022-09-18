@@ -1,6 +1,3 @@
-import { DefaultLayout } from '@/components/layouts/DefaultLayout'
-import { DashboardPage } from '@/components/pages/DashboardPage'
+import { Dashboard } from '@/components/pages/Dashboard'
 
-DashboardPage.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>
-
-export default DashboardPage
+export default Dashboard

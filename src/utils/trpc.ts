@@ -9,8 +9,6 @@ import { createTRPCNext } from '@trpc/next'
 import { NextPageContext } from 'next'
 import superjson from 'superjson'
 
-import type { inferProcedureInput, inferProcedureOutput } from '@trpc/server'
-
 import type { AppRouter } from '@/server/routers/_app'
 
 // default suspense config
@@ -54,7 +52,7 @@ export interface SSRContext extends NextPageContext {
  * @link https://trpc.io/docs/react#3-create-trpc-hooks
  */
 export const trpc = createTRPCNext<AppRouter, SSRContext>({
-  config() {
+  config: ({ ctx }) => {
     return {
       transformer: superjson,
       links: [
@@ -89,14 +87,10 @@ export const trpc = createTRPCNext<AppRouter, SSRContext>({
         return await window.fetch(input, init).then(async (response) => {
           if (response.headers) {
             if (response.headers.get(HEADER_SESSION_CREATED)) {
-              console.log('session created')
               // セッションが作られたら、キャッシュをクリアする。ログアウト時も匿名セッションが作られるので呼ばれる。
-              setTimeout(async () => {
-                console.log('clear cache')
-                await globalThis.queryClient.cancelQueries()
-                await globalThis.queryClient.resetQueries()
-                globalThis.queryClient.getMutationCache().clear()
-              }, 100)
+              await globalThis.queryClient.cancelQueries()
+              await globalThis.queryClient.resetQueries()
+              globalThis.queryClient.getMutationCache().clear()
             }
             if (response.headers.get(HEADER_CSRF_ERROR)) {
               console.log('csrf error')
@@ -107,33 +101,5 @@ export const trpc = createTRPCNext<AppRouter, SSRContext>({
       },
     }
   },
-  /**
-   * @link https://trpc.io/docs/ssr
-   **/
-  ssr: true,
-  /**
-   * Set headers or status code when doing SSR
-   */
-  responseMeta(opts) {
-    const ctx = opts.ctx as SSRContext
-
-    if (ctx.status) {
-      // If HTTP status set, propagate that
-      return {
-        status: ctx.status,
-      }
-    }
-
-    const error = opts.clientErrors[0]
-    if (error) {
-      // Propagate http first error from API calls
-      return {
-        status: error.data?.httpStatus ?? 500,
-      }
-    }
-
-    // for app caching with SSR see https://trpc.io/docs/caching
-
-    return {}
-  },
+  ssr: false,
 })

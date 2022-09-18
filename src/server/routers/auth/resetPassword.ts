@@ -1,54 +1,51 @@
 import { hash256, SecurePassword } from '@blitzjs/auth'
+import { TRPCError } from '@trpc/server'
 
 import { db } from '@/server/db'
 import { t } from '@/server/trpc'
+import { Role } from '@/types/blitz-auth'
 import { ResetPassword } from '@/validations/auth'
 
-export class ResetPasswordError extends Error {
-  name = 'ResetPasswordError'
-  message = 'Reset password link is invalid or it has expired.'
+class ResetPasswordTokenError extends TRPCError {
+  constructor() {
+    super({
+      code: 'BAD_REQUEST',
+      message: 'link is invalid or it has expired.',
+    })
+  }
 }
 
 export const resetPasswordProcedure = t.procedure
   .input(ResetPassword)
   .mutation(async ({ input: { token, password }, ctx: { session } }) => {
-    // パスワードリセット用トークンを検索
     const hashedToken = hash256(token)
     const savedToken = await db.resetPasswordToken.findFirst({
       where: { hashedToken },
     })
 
-    // 見つからない場合、エラー
     if (!savedToken) {
-      // TODO
-      throw new ResetPasswordError()
+      throw new ResetPasswordTokenError()
     }
 
-    // トークンを削除
-    // この後の処理でエラーが発生したとしてももう使われないため
+    // Delete token
     await db.resetPasswordToken.delete({ where: { id: savedToken.id } })
 
-    // トークンが有効期限切れの場合、エラー
     if (savedToken.expiresAt < new Date()) {
-      //TODO
-      throw new ResetPasswordError()
+      throw new ResetPasswordTokenError()
     }
 
-    // トークンが正しい場合、ユーザーのパスワードを更新
     const hashedPassword = await SecurePassword.hash(password)
     const user = await db.user.update({
       where: { id: savedToken.userId },
       data: { hashedPassword },
     })
 
-    // ユーザーのすべてのセッションを破棄
-    // 未ログインのため、session.$revokeAll() が使えない
+    // Revoke all sessions
     await db.session.deleteMany({
       where: { userId: user.id },
     })
 
-    // ログイン
-    await session.$create({ userId: user.id })
+    await session.$create({ userId: user.id, role: user.role as Role })
 
     return
   })

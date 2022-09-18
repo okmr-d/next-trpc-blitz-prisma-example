@@ -7,5 +7,5 @@ export const isAuthedMiddleware = t.middleware(
       throw new AuthenticationError()
     }
     return next()
-  }
+  },
 )

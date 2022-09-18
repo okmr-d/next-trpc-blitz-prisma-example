@@ -1,8 +1,9 @@
 import { hash256, SecurePassword } from '@blitzjs/auth'
-import { Prisma } from '@prisma/client'
+import { Prisma, User } from '@prisma/client'
 
 import { db } from '@/server/db'
 import { t } from '@/server/trpc'
+import { Role } from '@/types/blitz-auth'
 import { generateId } from '@/utils/generateId'
 import { Signup } from '@/validations/auth'
 
@@ -38,8 +39,9 @@ export const signupProcedure = t.procedure
     // トークンが正しい場合、ユーザーを作成
     const userId = generateId()
     const hashedPassword = await SecurePassword.hash(password)
+    let user: User | null = null
     try {
-      await db.user.create({
+      user = await db.user.create({
         data: {
           id: userId,
           name,
@@ -61,7 +63,7 @@ export const signupProcedure = t.procedure
       throw error
     }
 
-    await session.$create({ userId })
+    await session.$create({ userId: user.id, role: user.role as Role })
 
     return
   })

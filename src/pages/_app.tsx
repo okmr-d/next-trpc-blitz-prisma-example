@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 
 import type { AppPropsWithLayout } from 'next/app'
@@ -8,9 +9,9 @@ import { trpc } from '@/utils/trpc'
 const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => <>{page}</>)
 
-  const queryClient = trpc.useContext().queryClient
+  // To make queryClient available in @/utils/trpc.ts
+  const queryClient = useQueryClient()
   useEffect(() => {
-    // To make queryClient available in @/utils/trpc.ts
     globalThis.queryClient = queryClient
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
