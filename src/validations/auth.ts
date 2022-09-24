@@ -8,7 +8,7 @@ export const SendSignupEmail = z.object({
   email,
 })
 
-export const Signup = z.object({
+export const SignupWithEmail = z.object({
   name,
   password: newPassword,
   token,
@@ -34,7 +34,7 @@ export const ResetPassword = z
     {
       message: "Passwords don't match",
       path: ['passwordConfirmation'],
-    },
+    }
   )
 
 export const ChangePassword = z.object({

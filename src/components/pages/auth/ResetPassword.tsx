@@ -3,15 +3,18 @@ import { useMemo } from 'react'
 
 import type { NextPageWithLayout } from 'next'
 
+import { RedirectIfAuthenticated } from '@/components/common/RedirectIfAuthenticated'
 import { ResetPasswordForm } from '@/components/features/auth/ResetPasswordForm'
-import { DefaultLayout } from '@/components/layouts/DefaultLayout'
 
 export const ResetPassword: NextPageWithLayout = () => {
   const router = useRouter()
 
   const { token: tokenParam } = router.query
-  const token =
-    tokenParam && Array.isArray(tokenParam) ? tokenParam[0] : tokenParam ?? ''
+  const token = Array.isArray(tokenParam) ? tokenParam[0] : tokenParam ?? ''
+
+  if (!router.isReady) {
+    return <div>loading</div>
+  }
 
   return (
     <>
@@ -21,7 +24,6 @@ export const ResetPassword: NextPageWithLayout = () => {
           token={token}
           onSuccess={() => {
             alert('Password changed.')
-            router.replace('/dashboard')
           }}
         />
       </div>
@@ -29,4 +31,6 @@ export const ResetPassword: NextPageWithLayout = () => {
   )
 }
 
-ResetPassword.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>
+ResetPassword.getLayout = (page) => (
+  <RedirectIfAuthenticated>{page}</RedirectIfAuthenticated>
+)

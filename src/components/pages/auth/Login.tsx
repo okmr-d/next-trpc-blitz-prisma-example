@@ -1,31 +1,33 @@
+import { useSession } from '@blitzjs/auth'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
 import type { NextPageWithLayout } from 'next'
 
+import { RedirectIfAuthenticated } from '@/components/common/RedirectIfAuthenticated'
 import { LoginForm } from '@/components/features/auth/LoginForm'
 import { DefaultLayout } from '@/components/layouts/DefaultLayout'
-import { useRedirectNextPathIfAuthenticated } from '@/hooks/useRedirect'
-import { useSession } from '@/hooks/useSession'
 
 export const Login: NextPageWithLayout = () => {
-  useRedirectNextPathIfAuthenticated()
-
-  const session = useSession()
-  if (session.isLoading || session.userId) {
-    return <div>Loading...</div>
-  }
-
   return (
     <div>
       <h1>Login</h1>
       <LoginForm
         onSuccess={() => {
-          console.log('login success')
+          alert("You've successfully logged in.")
         }}
       />
-      <Link href="/auth/signup">{"Don't have an account?"}</Link>
+      <hr />
+      <div>
+        {"Don't have an account?"} <Link href="/auth/signup">Sign up</Link>
+      </div>
     </div>
   )
 }
 
-Login.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>
+Login.getLayout = (page) => (
+  <DefaultLayout>
+    <RedirectIfAuthenticated>{page}</RedirectIfAuthenticated>
+  </DefaultLayout>
+)

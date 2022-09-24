@@ -28,9 +28,10 @@ export const SendResetPasswordEmailForm = ({
           await sendResetPasswordEmailMutation.mutateAsync(values)
           onSuccess()
         } catch (error: any) {
-          return {
-            [FORM_ERROR]: 'Sorry, something went wrong',
+          if (error.data?.errorName === 'ZodError' && error.data?.zodError) {
+            return error.data.zodError.fieldErrors
           }
+          return { [FORM_ERROR]: 'Sorry, we had an unexpected error.' }
         }
       }}
     >

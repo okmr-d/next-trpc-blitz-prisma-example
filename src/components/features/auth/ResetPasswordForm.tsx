@@ -1,3 +1,6 @@
+import Link from 'next/link'
+import { useState } from 'react'
+
 import {
   Form,
   FORM_ERROR,
@@ -19,6 +22,7 @@ export const ResetPasswordForm = ({
   onSuccess,
 }: ResetPasswordFormProps) => {
   const resetPasswordMutation = trpc.auth.resetPassword.useMutation()
+  const [showForgotPasswordLink, setShowForgotPasswordLink] = useState(false)
 
   return (
     <Form
@@ -33,15 +37,14 @@ export const ResetPasswordForm = ({
           await resetPasswordMutation.mutateAsync(values)
           onSuccess()
         } catch (error: any) {
-          if (error.name === 'TRPCClientError') {
-            return {
-              [FORM_ERROR]: error.message || 'Sorry, something went wrong',
-            }
-          } else {
-            return {
-              [FORM_ERROR]: 'Sorry, something went wrong',
-            }
+          if (error.data?.errorName === 'ZodError' && error.data?.zodError) {
+            return error.data.zodError.fieldErrors
           }
+          if (error.data?.errorName === 'ResetPasswordTokenError') {
+            setShowForgotPasswordLink(true)
+            return { [FORM_ERROR]: error.message }
+          }
+          return { [FORM_ERROR]: 'Sorry, we had an unexpected error.' }
         }
       }}
     >
@@ -68,6 +71,11 @@ export const ResetPasswordForm = ({
       <div>
         <SubmitButton>Change password</SubmitButton>
         <FormError />
+        {showForgotPasswordLink && (
+          <div>
+            Please <Link href="/auth/forgot-password">resend email</Link> again.
+          </div>
+        )}
       </div>
     </Form>
   )

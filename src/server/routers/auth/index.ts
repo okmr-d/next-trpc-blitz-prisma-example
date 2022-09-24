@@ -4,11 +4,11 @@ import { logoutProcedure } from './logout'
 import { resetPasswordProcedure } from './resetPassword'
 import { sendResetPasswordEmailProcedure } from './sendResetPasswordEmail'
 import { sendSignupEmailProcedure } from './sendSignupEmail'
-import { signupProcedure } from './signup'
+import { signupWithEmailProcedure } from './signupWithEmail'
 
 export const authRouter = t.router({
   sendSignupEmail: sendSignupEmailProcedure,
-  signup: signupProcedure,
+  signupWithEmail: signupWithEmailProcedure,
   login: loginProcedure,
   logout: logoutProcedure,
   sendResetPasswordEmail: sendResetPasswordEmailProcedure,

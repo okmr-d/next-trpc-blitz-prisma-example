@@ -12,7 +12,7 @@ import { trpc } from '@/utils/trpc'
 import { Login } from '@/validations/auth'
 
 type LoginFormProps = {
-  onSuccess?: () => void
+  onSuccess: () => void
 }
 
 export const LoginForm = ({ onSuccess }: LoginFormProps) => {
@@ -26,14 +26,15 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
         try {
           await loginMutation.mutateAsync({ email, password })
         } catch (error: any) {
-          if (error.data?.code === 'UNAUTHENTICATED') {
-            return {
-              [FORM_ERROR]: 'Invalid email or password',
-            }
+          if (error.data?.errorName === 'ZodError' && error.data?.zodError) {
+            return error.data.zodError.fieldErrors
           }
-          return { [FORM_ERROR]: 'Sorry, something went wrong' }
+          if (error.data?.errorName === 'AuthenticationError') {
+            return { [FORM_ERROR]: 'Invalid email or password' }
+          }
+          return { [FORM_ERROR]: 'Sorry, we had an unexpected error.' }
         }
-        onSuccess?.()
+        onSuccess()
       }}
     >
       <div>

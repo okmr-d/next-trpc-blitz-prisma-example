@@ -20,8 +20,8 @@ export const authenticateUser = async (email: string, password: string) => {
     const improvedHash = await SecurePassword.hash(password)
 
     await db.user.update({
-      where: { id: user.id },
       data: { hashedPassword: improvedHash },
+      where: { id: user.id },
     })
   }
 
@@ -33,6 +33,13 @@ export const loginProcedure = t.procedure
   .input(Login)
   .mutation(async ({ input: { email, password }, ctx: { session } }) => {
     const user = await authenticateUser(email, password)
-    await session.$create({ userId: user.id, role: user.role as Role })
+
+    // Create new session
+    await session.$create({
+      userId: user.id,
+      name: user.name,
+      role: user.role as Role,
+    })
+
     return
   })

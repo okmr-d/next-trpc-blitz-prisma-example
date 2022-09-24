@@ -1,39 +1,64 @@
 import { initTRPC } from '@trpc/server'
 import superjson from 'superjson'
+import { ZodError } from 'zod'
 
 import type { Context } from './context'
 
-import { AuthenticationError, CSRFTokenMismatchError } from './errors'
+import {
+  AuthenticationError,
+  CSRFTokenMismatchError,
+  CustomError,
+} from './errors'
 
 export const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error, ctx }) => {
-    console.log({ shape, error })
     if (error.cause instanceof AuthenticationError) {
       return {
-        code: 'UNAUTHENTICATED',
+        ...shape,
+        message: 'You must be logged in to access this',
         data: {
-          code: 'UNAUTHENTICATED',
+          ...shape.data,
+          code: 'UNAUTHORIZED',
           httpStatus: 401,
-          message: 'unauthenticated',
+          errorName: 'AuthenticationError',
         },
       }
     } else if (error.cause instanceof CSRFTokenMismatchError) {
       return {
-        code: 'BAD_REQUEST',
-        message: 'anti CSRF token does not match',
+        ...shape,
+        message: 'Anti CSRF token does not match',
         data: {
-          code: 'CSRF_TOKEN_MISMATCH',
+          ...shape.data,
+          code: 'BAD_REQUEST',
           httpStatus: 400,
+          errorName: 'CSRFTokenMismatchError',
+        },
+      }
+    } else if (error.cause instanceof ZodError) {
+      return {
+        ...shape,
+        message: 'Validation failed',
+        data: {
+          ...shape.data,
+          code: 'BAD_REQUEST',
+          httpStatus: 400,
+          errorName: 'ZodError',
+          zodError: error.cause.flatten(),
+        },
+      }
+    } else if (error.cause instanceof CustomError) {
+      return {
+        ...shape,
+        data: {
+          ...shape.data,
+          code: 'BAD_REQUEST',
+          httpStatus: 400,
+          errorName: error.cause.name,
         },
       }
     }
 
-    delete shape.data.stack
-
-    return {
-      ...shape,
-      code: shape.data.code,
-    }
+    return shape
   },
 })

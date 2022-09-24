@@ -1,7 +1,9 @@
 import {
   getAntiCSRFToken,
+  getPublicDataStore,
   HEADER_CSRF,
   HEADER_CSRF_ERROR,
+  HEADER_PUBLIC_DATA_TOKEN,
   HEADER_SESSION_CREATED,
 } from '@blitzjs/auth'
 import { httpLink, loggerLink } from '@trpc/client'
@@ -10,10 +12,6 @@ import { NextPageContext } from 'next'
 import superjson from 'superjson'
 
 import type { AppRouter } from '@/server/routers/_app'
-
-// default suspense config
-globalThis.__BLITZ_SUSPENSE_ENABLED = false
-globalThis.__BLITZ_SESSION_COOKIE_PREFIX = 'myapp'
 
 const getBaseUrl = () => {
   if (typeof window !== 'undefined') {
@@ -86,6 +84,9 @@ export const trpc = createTRPCNext<AppRouter, SSRContext>({
       fetch: async (input, init) => {
         return await window.fetch(input, init).then(async (response) => {
           if (response.headers) {
+            if (response.headers.get(HEADER_PUBLIC_DATA_TOKEN)) {
+              getPublicDataStore().updateState()
+            }
             if (response.headers.get(HEADER_SESSION_CREATED)) {
               // セッションが作られたら、キャッシュをクリアする。ログアウト時も匿名セッションが作られるので呼ばれる。
               await globalThis.queryClient.cancelQueries()
