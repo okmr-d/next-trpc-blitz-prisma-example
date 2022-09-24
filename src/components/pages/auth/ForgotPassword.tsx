@@ -1,6 +1,5 @@
-import Link from 'next/link'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
 
 import type { NextPageWithLayout } from 'next'
 
@@ -12,6 +11,9 @@ export const ForgotPassword: NextPageWithLayout = () => {
   const router = useRouter()
   return (
     <>
+      <Head>
+        <title>Forgot your password?</title>
+      </Head>
       <h1>Forgot your password?</h1>
       <div>{"We'll send you a link to reset your password."}</div>
 

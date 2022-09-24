@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import Link from 'next/link'
 
 import type { NextPageWithLayout } from 'next'
@@ -8,7 +9,10 @@ import { DefaultLayout } from '@/components/layouts/DefaultLayout'
 
 export const Signup: NextPageWithLayout = () => {
   return (
-    <div>
+    <>
+      <Head>
+        <title>Sign Up</title>
+      </Head>
       <h1>Sign Up</h1>
       <SendSignupEmailForm
         onSuccess={() => {
@@ -19,7 +23,7 @@ export const Signup: NextPageWithLayout = () => {
       <div>
         Have an account? <Link href="/auth/login">Login</Link>
       </div>
-    </div>
+    </>
   )
 }
 

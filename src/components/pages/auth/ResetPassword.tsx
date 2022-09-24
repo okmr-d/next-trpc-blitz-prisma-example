@@ -1,5 +1,5 @@
+import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useMemo } from 'react'
 
 import type { NextPageWithLayout } from 'next'
 
@@ -18,6 +18,9 @@ export const ResetPassword: NextPageWithLayout = () => {
 
   return (
     <>
+      <Head>
+        <title>Change your password</title>
+      </Head>
       <h1>Change your password</h1>
       <div>
         <ResetPasswordForm

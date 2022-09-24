@@ -1,4 +1,5 @@
 import { NextPageWithLayout } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { RedirectIfAuthenticated } from '@/components/common/RedirectIfAuthenticated'
@@ -16,6 +17,9 @@ export const SignupWithEmail: NextPageWithLayout = () => {
 
   return (
     <>
+      <Head>
+        <title>Sign up with Email</title>
+      </Head>
       <h1>Sign up with Email</h1>
       <div>
         Please fill in the following fields to complete your registration.

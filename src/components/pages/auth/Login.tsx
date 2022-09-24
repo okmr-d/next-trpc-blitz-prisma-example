@@ -1,7 +1,5 @@
-import { useSession } from '@blitzjs/auth'
+import Head from 'next/head'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 
 import type { NextPageWithLayout } from 'next'
 
@@ -11,7 +9,10 @@ import { DefaultLayout } from '@/components/layouts/DefaultLayout'
 
 export const Login: NextPageWithLayout = () => {
   return (
-    <div>
+    <>
+      <Head>
+        <title>Login</title>
+      </Head>
       <h1>Login</h1>
       <LoginForm
         onSuccess={() => {
@@ -22,7 +23,7 @@ export const Login: NextPageWithLayout = () => {
       <div>
         {"Don't have an account?"} <Link href="/auth/signup">Sign up</Link>
       </div>
-    </div>
+    </>
   )
 }
 
